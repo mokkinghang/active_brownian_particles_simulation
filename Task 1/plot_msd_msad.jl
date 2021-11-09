@@ -1,6 +1,6 @@
 include("Task1.jl")
 
-N1, N2 = 1,1
+N1, N2 = 40,25
 L = 85
 dt = 10^(-4)
 writedata_steps = 100
