@@ -1,29 +1,42 @@
-using Random, Plots, LinearAlgebra, Statistics, LaTeXStrings, JLD2, PyCall
+using Random, Plots, LinearAlgebra, Statistics, LaTeXStrings, JLD2
 pyplot()
 
-N = parse(Int64,ARGS[1])   # Number of particles
-# Pe = parse(Float64,ARGS[2]) # Peclet number
-L = 85 # side length of box
-dt = 0.001 # time step
-writedata_steps = 10 # number of time steps to write data into matrix
-T = 100 # Total simulation time
+"""
+Define the number of particles N = N1*N2, where N1 is number of particles along x-direction and N2 along y-direction
+"""
+N1, N2 = parse(Int64,ARGS[1]),parse(Int64,ARGS[2])
+Pe = parse(Float64,ARGS[3]) # Peclet number
+L = parse(Float64,ARGS[4]) # side length of box
+dt = parse(Float64,ARGS[5]) # time step
+writedata_steps = parse(Float64,ARGS[6]) # number of time steps to write data into matrix
+T = parse(Float64,ARGS[7]) # Total simulation time
 sigma_to_R = 1 # The ratio sigma/R
 
+N = N1*N2
 time_steps = trunc(Int,T/dt)
 M = trunc(Int,T/(dt*writedata_steps)) + 1 # number of "screenshots" made, i.e. writing data to matrix
+
+"""
+Input mode: 
+traj: save and plot trajectories
+msd: save and plot MSD
+msad: save and plot MSAD
+"""
 
 """
 Theoretical MSD (nondimensionalized)
 """
 theoretical_msd(t, Pe) = (4 + 8/3*Pe^2*(sigma_to_R)^(-2))*t + 32/9*Pe^2*(sigma_to_R)^(-4)*(exp(-3/4*sigma_to_R^2*t)-1)
 
-function update!(arr, Pe)
+function update!(arr, Pe, enable_pbc=true)
     # Loop through each particle
     for i in 1:N
         arr[:,i] += [Pe*cos(arr[3,i]), Pe*sin(arr[3,i]), 0] * dt + [sqrt(2), sqrt(2), sqrt(3/2)*sigma_to_R] .* randn(3) * sqrt(dt)        
     end
-    # Periodic boundary condition 
-    # pbc!(arr)
+    # Periodic boundary condition
+    if enable_pbc
+        pbc!(arr)
+    end
     return arr
 end
 
@@ -36,6 +49,17 @@ end
 function random_initialization()
     arr = zeros(3,N)
     arr[1:2,:] = rand(2,N) * L
+    arr[3,:] = rand(1,N) * 2*pi
+    return arr
+end
+
+function even_spacing_initialization()
+    arr = zeros(3,N)
+    p,q = L/N1, L/N2
+    x_arr = vcat([[p*i for i in 0:N1-1] for i in 0:N2-1]...)
+    y_arr = vcat([[q*j for i in 0:N1-1] for j in 0:N2-1]...)
+    arr[1,:] = x_arr
+    arr[2,:] = y_arr
     arr[3,:] = rand(1,N) * 2*pi
     return arr
 end
@@ -98,10 +122,21 @@ function save_traj_to_jld2(Pe_arr)
     end
 end
 
+function plot_trajectories(traj)
+    trajectory_plot = plot(xlabel=L"x", ylabel=L"y", dpi=300, title=L"Pe=$(Pe)")
+    shapes = [:circle, :utriangle, :cross, :star5, :pentagon]
+    particle_num = size(traj)[2]
+    for i in 1:particle_num
+        x_arr = traj[1,i,:]
+        y_arr = traj[2,i,:]
+        scatter!(x_arr, y_arr, markersize=5, markershape=shapes[i], label="particle $(i)")
+    end
+    savefig(trajectory_plot, "traj_Pe=$(Pe).png")
+end
 
 function plot_msd(jld2_file_arr)
     # Open JLD2 file
-    msd_plot = plot(xlabel=L"t", ylabel=L"MSD", title=L"N=%$(N)", legend=:bottomright, 
+    msd_plot = plot(xlabel=L"t", ylabel=L"MSD", legend=:bottomright, 
     dpi=300, xaxis=:log, yaxis=:log, xlims=(dt*writedata_steps, Inf), ylims=(dt,Inf))
 
     for jld2_file in jld2_file_arr
@@ -120,7 +155,7 @@ function plot_msd(jld2_file_arr)
 end
 
 function plot_msad(jld2_file_arr)
-    msad_plot = plot(xlabel=L"t", ylabel=L"MSAD", title=L"N=%$(N)", legend=:bottomright, dpi=300)
+    msad_plot = plot(xlabel=L"t", ylabel=L"MSAD", legend=:bottomright, dpi=300)
     
     for jld2_file in jld2_file_arr
         file = jldopen(jld2_file, "r")
@@ -134,14 +169,6 @@ function plot_msad(jld2_file_arr)
     savefig(msad_plot, "msad.png")
 end
 
-function find_slope(x_arr, y_arr)
-    """
-    A function to find slope and intecept of a linear plot
-    """
-    stats = pyimport("scipy.stats")
-    res = stats.linregress(x_arr, y_arr)
-    println(res)
-end
 
 
 # save_traj_to_jld2([0,5,10,15,20])
@@ -152,4 +179,3 @@ plot_msad(["Pe=0.jld2", "Pe=5.jld2", "Pe=10.jld2", "Pe=15.jld2", "Pe=20.jld2"])
 # file = jldopen("Pe=20.jld2", "r")
 # x_arr = file["t_arr"]
 # y_arr = file["msad"]
-# find_slope(x_arr, y_arr)
