@@ -2,8 +2,8 @@ include("Task1.jl")
 
 N1, N2 = 40,25
 L = 85
-dt = 10^(-4)
-writedata_steps = 100
+dt = 10^(-3)
+writedata_steps = 10
 T = 100
 sigma_to_R = 1
 enable_pbc = false
