@@ -128,7 +128,7 @@ end
 function plot_msd(jld2_file_arr)
     # Open JLD2 file
     msd_plot = plot(xlabel=L"t", ylabel=L"MSD", legend=:bottomright, 
-    dpi=300, xaxis=:log, yaxis=:log, xlims=(dt*writedata_steps, Inf), ylims=(dt,Inf))
+    dpi=300, xaxis=:log, yaxis=:log, xlims=(dt*writedata_steps, T), ylims=(dt,Inf))
 
     for jld2_file in jld2_file_arr
         file = jldopen(jld2_file, "r")
