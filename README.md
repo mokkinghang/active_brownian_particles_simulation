@@ -1,6 +1,7 @@
 # Active Brownian particles simulation
 
 This is a simulation code for simulating a group of interacting active Brownian particles
+
 ![equation](https://i.imgur.com/MAFfwFm.png)
 
 
