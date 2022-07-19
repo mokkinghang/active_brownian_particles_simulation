@@ -21,7 +21,7 @@ In the simulation, we need a nondimensionalized system of equations of motion, w
 
 The nondimensionalized Langevin equations are
 
-<img src="https://latex.codecogs.com/svg.image?\frac{d&space;\vec&space;r'}{d&space; t'}&space;=&space;Pe&space;\;&space;\hat{e}&space;&plus;&space;\sqrt{2}{\vec&space;\xi'}&space;" title="\frac{d \vec r'}{d \bar t} = Pe \; \hat{e} + \sqrt{2}{\vec \xi'} " />
+<img src="https://latex.codecogs.com/svg.image?\frac{dr'}{dt'}&space;=&space;Pe&space;\;&space;\hat{e}&space;&plus;&space;\sqrt{2}&space;\vec&space;\xi'" title="\frac{dr'}{dt'} = Pe \; \hat{e} + \sqrt{2} \vec \xi'" />
 <img src="https://latex.codecogs.com/svg.image?\frac{d&space;\varphi'}{dt'}&space;=&space;\sqrt{\frac{3}{2}}\frac{\sigma}{R}&space;\chi'&space;" title="\frac{d \varphi'}{dt'} = \sqrt{\frac{3}{2}}\frac{\sigma}{R} \chi' " />
 
 
