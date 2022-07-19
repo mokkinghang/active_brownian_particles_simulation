@@ -2,7 +2,7 @@
 
 This is a simulation code for simulating a group of interacting active Brownian particles
 
-![equation](https://i.imgur.com/MAFfwFm.png)
+<img src="https://latex.codecogs.com/svg.image?\dot&space;\vec&space;r&space;=&space;v_0&space;\hat{e}&plus;\sqrt{2D_T}\vec\xi&space;" title="\dot \vec r = v_0 \hat{e}+\sqrt{2D_T}\vec\xi " />
 
 
 ## Task 1: Langevin Equation
