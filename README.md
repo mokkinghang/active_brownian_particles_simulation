@@ -25,9 +25,14 @@ The nondimensionalized Langevin equations are
 <img src="https://latex.codecogs.com/svg.image?\frac{d&space;\varphi'}{dt'}&space;=&space;\sqrt{\frac{3}{2}}\frac{\sigma}{R}&space;\chi'&space;" title="\frac{d \varphi'}{dt'} = \sqrt{\frac{3}{2}}\frac{\sigma}{R} \chi' " />
 
 
-## Task 1: Langevin Equation
+## Task 1
 
-In this 
+In this task, no WCA potential is introduced, i.e. the particles are non-interacting. 
+
 To plot the trajectories of five particles for Pe=0 and Pe=20, run in command line `julia plot_trajectories.jl`.
 
 To plot the MSD and MSAD plots, run in command line `julia plot_msd_msad.jl`.
+
+## Task 2
+
+In this task, WCA potential is introduced. The introduction of cell linked list algorithms should reduce the time complexity to O(n).
